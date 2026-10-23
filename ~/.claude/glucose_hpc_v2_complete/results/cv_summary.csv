@@ -1,0 +1,11 @@
+dataset,target,AUC_mean,AUC_std,PR_AUC_mean,PR_AUC_std,RMSE_mean,RMSE_std
+glucotwin,Target_Excursion_120,,,,,21.097,0.996
+glucotwin,Target_Glucose_t+120,,,,,20.372,1.543
+glucotwin,Target_Glucose_t+30,,,,,8.125,0.331
+glucotwin,Target_Glucose_t+60,,,,,17.652,0.714
+glucotwin,Target_Glucose_t+90,,,,,22.0,1.106
+glucotwin,Target_Peak_120,,,,,20.857,1.218
+glucotwin,Target_Spike_Over_180,0.972,0.006,0.951,0.012,,
+glucotwin,Target_Time_To_Peak_min,,,,,17.982,0.694
+glucotwin,Target_iAUC_120,,,,,1554.796,82.82
+smart_wearable,health_risk,0.85,0.013,0.794,0.02,,

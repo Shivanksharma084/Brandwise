@@ -1,0 +1,170 @@
+{
+  "id_cols": [
+    "patient_uid",
+    "segment_id",
+    "dt"
+  ],
+  "group_col": "patient_uid",
+  "split_method": "patient-level 70/15/15, stratified by diabetes_type",
+  "features": [
+    "cgm",
+    "cgm_lag_15m",
+    "cgm_lag_30m",
+    "cgm_lag_45m",
+    "cgm_lag_60m",
+    "cgm_lag_90m",
+    "cgm_lag_120m",
+    "cgm_delta_15",
+    "cgm_delta_30",
+    "cgm_delta_60",
+    "cgm_roll_mean_60m",
+    "cgm_roll_std_60m",
+    "cgm_roll_min_120m",
+    "csii_basal",
+    "fast_insulin_last_4h",
+    "meal_grams_last_2h",
+    "mins_since_meal",
+    "mins_since_fast_insulin",
+    "oral_agent_count",
+    "cgm_mean_6h",
+    "cgm_std_6h",
+    "cgm_mean_24h",
+    "cgm_tir_24h",
+    "cgm_tbr_24h",
+    "iob_proxy",
+    "cob_proxy",
+    "csii_suspend",
+    "sc_long_acting",
+    "meal_logged",
+    "cgm_interpolated",
+    "is_t2dm",
+    "hour_sin",
+    "hour_cos"
+  ],
+  "targets": [
+    "target_cgm_t30",
+    "target_cgm_t60",
+    "target_hypo_60"
+  ],
+  "not_used_as_features": [
+    "cbg",
+    "ketone",
+    "csii_basal_raw/diet_text etc. (raw text)"
+  ],
+  "scaled_cols_mean_std": {
+    "cgm": [
+      145.03548243795535,
+      52.65427525261237
+    ],
+    "cgm_lag_15m": [
+      145.05587277142686,
+      52.677831223950044
+    ],
+    "cgm_lag_30m": [
+      145.0837262334893,
+      52.70499370978867
+    ],
+    "cgm_lag_45m": [
+      145.11917609429602,
+      52.732484051453284
+    ],
+    "cgm_lag_60m": [
+      145.15918379434933,
+      52.75750240407007
+    ],
+    "cgm_lag_90m": [
+      145.23895930817983,
+      52.798870537120024
+    ],
+    "cgm_lag_120m": [
+      145.31020553219216,
+      52.83152632882809
+    ],
+    "cgm_delta_15": [
+      -0.020390333471539426,
+      9.769168848524384
+    ],
+    "cgm_delta_30": [
+      -0.04824379553396907,
+      18.07842852692762
+    ],
+    "cgm_delta_60": [
+      -0.12370135639400583,
+      30.59620709758082
+    ],
+    "cgm_roll_mean_60m": [
+      145.07356438429187,
+      51.76045783163466
+    ],
+    "cgm_roll_std_60m": [
+      8.29854758195705,
+      7.805641811532921
+    ],
+    "cgm_roll_min_120m": [
+      126.78967896700826,
+      45.29873794091034
+    ],
+    "csii_basal": [
+      0.10386335366937155,
+      0.21769552397142788
+    ],
+    "fast_insulin_last_4h": [
+      1.4371261031807143,
+      3.163083058621087
+    ],
+    "meal_grams_last_2h": [
+      59.8900669312326,
+      140.8944464387071
+    ],
+    "mins_since_meal": [
+      222.1815583723272,
+      126.20569833982562
+    ],
+    "mins_since_fast_insulin": [
+      303.0154593377954,
+      105.33446417687357
+    ],
+    "oral_agent_count": [
+      0.022818811822543385,
+      0.1864571717330306
+    ],
+    "cgm_mean_6h": [
+      145.38606103096032,
+      43.17603112784901
+    ],
+    "cgm_std_6h": [
+      26.064617773248077,
+      17.10128490686355
+    ],
+    "cgm_mean_24h": [
+      145.9357093987639,
+      34.34326473156053
+    ],
+    "cgm_tir_24h": [
+      0.7614915173964244,
+      0.2289345038440013
+    ],
+    "cgm_tbr_24h": [
+      0.0222401619306319,
+      0.06809678426971227
+    ],
+    "iob_proxy": [
+      0.826557091798138,
+      1.8212558389889197
+    ],
+    "cob_proxy": [
+      47.772903973280975,
+      92.33119338424991
+    ]
+  },
+  "unscaled_cols": [
+    "csii_suspend",
+    "sc_long_acting",
+    "meal_logged",
+    "cgm_interpolated",
+    "is_t2dm",
+    "hour_sin",
+    "hour_cos"
+  ],
+  "note": "15-min grid. Windows never cross a gap > 45 min. Targets unscaled (mg/dL; hypo = 0/1)."
+}

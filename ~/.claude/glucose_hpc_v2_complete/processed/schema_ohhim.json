@@ -1,0 +1,220 @@
+{
+  "id_cols": [
+    "patient",
+    "segment_id",
+    "dt"
+  ],
+  "group_col": "patient",
+  "split_method": "temporal 70/15/15 inside each patient, 1h purge gap",
+  "features": [
+    "glucose",
+    "glucose_lag_5m",
+    "glucose_lag_10m",
+    "glucose_lag_15m",
+    "glucose_lag_30m",
+    "glucose_lag_45m",
+    "glucose_lag_60m",
+    "glucose_delta_15",
+    "glucose_delta_30",
+    "glucose_delta_60",
+    "glucose_roll_mean_30m",
+    "glucose_roll_std_30m",
+    "glucose_mean_6h",
+    "glucose_std_6h",
+    "glucose_mean_24h",
+    "glucose_tir_24h",
+    "glucose_tbr_24h",
+    "hr",
+    "gsr",
+    "skin_temp_c",
+    "air_temp_c",
+    "steps",
+    "hr_mean_30m",
+    "steps_sum_30m",
+    "basal_rate",
+    "bolus_last_2h",
+    "bolus_last_4h",
+    "carbs_last_2h",
+    "mins_since_meal",
+    "mins_since_bolus",
+    "work_intensity",
+    "exercise_intensity",
+    "iob_proxy",
+    "cob_proxy",
+    "glucose_interpolated",
+    "temp_basal_active",
+    "is_sleep",
+    "hr_missing",
+    "gsr_missing",
+    "skin_temp_c_missing",
+    "air_temp_c_missing",
+    "steps_missing",
+    "hour_sin",
+    "hour_cos"
+  ],
+  "targets": [
+    "target_glucose_t30",
+    "target_glucose_t60",
+    "target_hypo_60"
+  ],
+  "imputed_with_train_median": {
+    "hr": 79.0,
+    "gsr": 9.5e-05,
+    "skin_temp_c": 31.0,
+    "air_temp_c": 28.800000000000004,
+    "steps": 0.0,
+    "hr_mean_30m": 79.66666666666667,
+    "steps_sum_30m": 3.0
+  },
+  "scaled_cols_mean_std": {
+    "glucose": [
+      170.97254772254772,
+      63.33357601582724
+    ],
+    "glucose_lag_5m": [
+      170.99220374220374,
+      63.33480052035281
+    ],
+    "glucose_lag_10m": [
+      171.00637875637875,
+      63.335848104992344
+    ],
+    "glucose_lag_15m": [
+      171.01658476658477,
+      63.33206529344978
+    ],
+    "glucose_lag_30m": [
+      171.03586278586278,
+      63.313159563044636
+    ],
+    "glucose_lag_45m": [
+      171.02811377811378,
+      63.30238910377899
+    ],
+    "glucose_lag_60m": [
+      170.99664524664524,
+      63.312010630636514
+    ],
+    "glucose_delta_15": [
+      -0.04403704403704404,
+      12.827289450817206
+    ],
+    "glucose_delta_30": [
+      -0.06331506331506331,
+      22.34969711966423
+    ],
+    "glucose_delta_60": [
+      -0.0240975240975241,
+      37.1575863367245
+    ],
+    "glucose_roll_mean_30m": [
+      171.0070245070245,
+      62.92007179299413
+    ],
+    "glucose_roll_std_30m": [
+      5.986573629397838,
+      5.121189867399924
+    ],
+    "glucose_mean_6h": [
+      170.84816113582215,
+      51.27567061422239
+    ],
+    "glucose_std_6h": [
+      32.77026781067291,
+      17.741775238770423
+    ],
+    "glucose_mean_24h": [
+      170.56895705823524,
+      42.78244372354752
+    ],
+    "glucose_tir_24h": [
+      0.5451984636148298,
+      0.26613531615325287
+    ],
+    "glucose_tbr_24h": [
+      0.025812707959336493,
+      0.054812727822293614
+    ],
+    "hr": [
+      79.29375354375354,
+      16.053269973335656
+    ],
+    "gsr": [
+      0.3333250964845965,
+      1.9080303668227687
+    ],
+    "skin_temp_c": [
+      31.043308343308343,
+      1.823210497999487
+    ],
+    "air_temp_c": [
+      29.144044656544654,
+      2.3685644706223004
+    ],
+    "steps": [
+      2.820827820827821,
+      10.397308784793465
+    ],
+    "hr_mean_30m": [
+      79.42260416010417,
+      14.997492637571561
+    ],
+    "steps_sum_30m": [
+      17.243432243432242,
+      50.49591229138528
+    ],
+    "basal_rate": [
+      0.9215876015876018,
+      0.24671233226309222
+    ],
+    "bolus_last_2h": [
+      2.9226044226044228,
+      5.542575312138823
+    ],
+    "bolus_last_4h": [
+      5.885248535248535,
+      8.164481780141838
+    ],
+    "carbs_last_2h": [
+      14.316102816102816,
+      30.45763474528328
+    ],
+    "mins_since_meal": [
+      215.57078057078058,
+      124.43423370899315
+    ],
+    "mins_since_bolus": [
+      187.44802494802494,
+      126.12059000714315
+    ],
+    "work_intensity": [
+      0.7562842562842563,
+      1.7021798063302649
+    ],
+    "exercise_intensity": [
+      0.10593460593460594,
+      0.7251357778440647
+    ],
+    "iob_proxy": [
+      3.2158007988388904,
+      4.406820209708358
+    ],
+    "cob_proxy": [
+      10.603705963655436,
+      18.36373978472144
+    ]
+  },
+  "unscaled_cols": [
+    "glucose_interpolated",
+    "temp_basal_active",
+    "is_sleep",
+    "hr_missing",
+    "gsr_missing",
+    "skin_temp_c_missing",
+    "air_temp_c_missing",
+    "steps_missing",
+    "hour_sin",
+    "hour_cos"
+  ],
+  "note": "5-min grid. Temps converted F->C. Sleep intervals with end<begin were swapped. Window never crosses a glucose gap > 30 min. Patients P1..P6 = source files in order."
+}

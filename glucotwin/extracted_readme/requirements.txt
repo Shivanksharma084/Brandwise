@@ -1,0 +1,27 @@
+# GlucoTwin - Diabetes Management & Glucose Prediction System
+# Required Python dependencies for the ML pipeline
+
+# Core Data Processing
+pandas>=1.3.0
+numpy>=1.20.0
+
+# Machine Learning
+scikit-learn>=1.0.0
+lightgbm>=3.0.0
+xgboost>=1.5.0
+
+# Deep Learning (for GRU model)
+tensorflow>=2.8.0
+
+# Data Visualization (for analysis scripts)
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Optional: Model Explainability
+shap>=0.40.0
+
+# Optional: Hyperparameter Tuning
+optuna>=3.0.0
+
+# Note: The dashboard frontend (dashboard.html) runs in the browser
+# and requires no Python dependencies. Chart.js is loaded via CDN.

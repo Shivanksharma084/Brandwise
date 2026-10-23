@@ -1,0 +1,359 @@
+{
+  "id_cols": [
+    "Participant_ID"
+  ],
+  "group_col": "Participant_ID",
+  "split_method": "participant-level 70/15/15, stratified by Diabetes_Status",
+  "features": [
+    "Calories",
+    "Carbs",
+    "Protein",
+    "Fat",
+    "Fiber",
+    "Amount_Consumed",
+    "Effective_Carbs",
+    "Min_Since_Prev_Meal",
+    "Prev_Meal_Carbs",
+    "Dexcom_t-60",
+    "Dexcom_t-55",
+    "Dexcom_t-50",
+    "Dexcom_t-45",
+    "Dexcom_t-40",
+    "Dexcom_t-35",
+    "Dexcom_t-30",
+    "Dexcom_t-25",
+    "Dexcom_t-20",
+    "Dexcom_t-15",
+    "Dexcom_t-10",
+    "Dexcom_t-5",
+    "Dexcom_t0",
+    "Libre_t0",
+    "Glucose_Slope_15",
+    "Glucose_Mean_60",
+    "Glucose_SD_60",
+    "HR_Mean_30",
+    "Mets_Mean_30",
+    "Mets_Max_60",
+    "ActCal_Sum_60",
+    "Age",
+    "BMI",
+    "Body_weight",
+    "Height",
+    "A1c_PDL_Lab",
+    "Fasting_GLU",
+    "Insulin",
+    "Triglycerides",
+    "Cholesterol",
+    "HDL",
+    "Non_HDL",
+    "Cho_HDL_Ratio",
+    "Fingerstick_GLU_2",
+    "Fingerstick_GLU_3",
+    "Is_Weekend",
+    "Hour_sin",
+    "Hour_cos",
+    "Is_Male",
+    "Meal_Breakfast",
+    "Meal_Dinner",
+    "Meal_Lunch",
+    "Eth_African_American",
+    "Eth_Hispanic_Latino",
+    "Eth_White",
+    "Dexcom_minus_Fasting",
+    "Carb_Fiber_Ratio",
+    "Carb_Cal_Share",
+    "TG_HDL_Ratio",
+    "Glucose_Range_60",
+    "Rise_From_Min_60",
+    "Microbiome_PC1",
+    "Microbiome_PC2",
+    "Microbiome_PC3",
+    "Microbiome_PC4",
+    "Microbiome_PC5"
+  ],
+  "targets": [
+    "Target_Glucose_t+30",
+    "Target_Glucose_t+60",
+    "Target_Glucose_t+90",
+    "Target_Glucose_t+120",
+    "Target_Peak_120",
+    "Target_Excursion_120",
+    "Target_Time_To_Peak_min",
+    "Target_iAUC_120",
+    "Target_Spike_Over_180"
+  ],
+  "aux_targets": [
+    "AUX_Diabetes_Status_code"
+  ],
+  "dropped_leakage": [
+    "Post_HR_Mean_60",
+    "Post_Mets_Mean_60",
+    "Next_Meal_Within_120min"
+  ],
+  "dropped_redundant": [
+    "HR_Mean_60",
+    "Fingerstick_GLU_1",
+    "HOMA_IR",
+    "VLDL_Cal",
+    "LDL_Cal"
+  ],
+  "microbiome_replaced_by_pca": [
+    "Gut_Lining_Health",
+    "LPS_Biosynthesis_Pathways",
+    "Biofilm_Chemotaxis_and_Virulence_Pathways",
+    "TMA_Production_Pathways",
+    "Ammonia_Production_Pathways",
+    "Metabolic_Fitness",
+    "Active_Microbial_Diversity",
+    "Butyrate_Production_Pathways",
+    "Flagellar_Assembly_Pathways",
+    "Putrescine_Production_Pathways",
+    "Uric_Acid_Production_Pathways",
+    "Bile_Acid_Metabolism_Pathways",
+    "Inflammatory_Activity",
+    "Gut_Microbiome_Health",
+    "Digestive_Efficiency",
+    "Protein_Fermentation",
+    "Gas_Production",
+    "Methane_Gas_Production_Pathways",
+    "Sulfide_Gas_Production_Pathways",
+    "Oxalate_Metabolism_Pathways",
+    "Salt_Stress_Pathways",
+    "Microbiome-Induced_Stress"
+  ],
+  "scaled_cols_mean_std": {
+    "Calories": [
+      595.7405393649412,
+      196.65951894197158
+    ],
+    "Carbs": [
+      64.7337973031753,
+      33.251091639777194
+    ],
+    "Protein": [
+      28.72531535450196,
+      10.456085525141662
+    ],
+    "Fat": [
+      24.66072205306655,
+      11.469466305363952
+    ],
+    "Fiber": [
+      6.6742061765985214,
+      2.6250359202391085
+    ],
+    "Amount_Consumed": [
+      86.68442801217921,
+      18.865317300131462
+    ],
+    "Effective_Carbs": [
+      56.01883427577208,
+      31.8239077860507
+    ],
+    "Min_Since_Prev_Meal": [
+      332.76207046541975,
+      47.87280546927626
+    ],
+    "Prev_Meal_Carbs": [
+      20.263375380600262,
+      32.22466281471361
+    ],
+    "Dexcom_t-60": [
+      113.01696389734667,
+      27.9580819205302
+    ],
+    "Dexcom_t-55": [
+      112.74597651152675,
+      27.473120639449384
+    ],
+    "Dexcom_t-50": [
+      112.3916920400174,
+      27.150906406814453
+    ],
+    "Dexcom_t-45": [
+      112.24662896911701,
+      26.781120782184217
+    ],
+    "Dexcom_t-40": [
+      111.94454110482819,
+      26.39311525448241
+    ],
+    "Dexcom_t-35": [
+      111.76098303610266,
+      26.101861230804904
+    ],
+    "Dexcom_t-30": [
+      111.53349282296651,
+      25.846446310600363
+    ],
+    "Dexcom_t-25": [
+      111.29273597216181,
+      25.510328390377918
+    ],
+    "Dexcom_t-20": [
+      111.00021748586342,
+      25.330761049919083
+    ],
+    "Dexcom_t-15": [
+      110.96476729012615,
+      25.09176846658196
+    ],
+    "Dexcom_t-10": [
+      110.61896476729012,
+      24.907783058042867
+    ],
+    "Dexcom_t-5": [
+      110.51783384080035,
+      24.8284152518882
+    ],
+    "Dexcom_t0": [
+      110.20182688125271,
+      24.552784235466994
+    ],
+    "Libre_t0": [
+      107.2683775554589,
+      25.59312423846421
+    ],
+    "Glucose_Slope_15": [
+      -0.0508410178338408,
+      0.4518494869402895
+    ],
+    "Glucose_Mean_60": [
+      111.57029143105697,
+      25.447782687627633
+    ],
+    "Glucose_SD_60": [
+      4.980541539799914,
+      1.6616706660028746
+    ],
+    "HR_Mean_30": [
+      69.26180948238364,
+      9.13204513312436
+    ],
+    "Mets_Mean_30": [
+      12.552117877337974,
+      3.4400641388949253
+    ],
+    "Mets_Max_60": [
+      17.201466942148762,
+      9.204863510134626
+    ],
+    "ActCal_Sum_60": [
+      107.09722357546761,
+      32.675009812038965
+    ],
+    "Age": [
+      46.2246628969117,
+      11.539094462149693
+    ],
+    "BMI": [
+      30.546581122227053,
+      5.55490117137636
+    ],
+    "Body_weight": [
+      188.49488908220965,
+      37.95229265839087
+    ],
+    "Height": [
+      65.81622444541105,
+      3.0370952065562404
+    ],
+    "A1c_PDL_Lab": [
+      6.107916485428446,
+      0.9117797365242042
+    ],
+    "Fasting_GLU": [
+      107.85471944323619,
+      21.59263882564063
+    ],
+    "Insulin": [
+      9.028969117007394,
+      5.6563417605881865
+    ],
+    "Triglycerides": [
+      125.40126141800783,
+      54.11356662827411
+    ],
+    "Cholesterol": [
+      190.2927359721618,
+      33.69575765307885
+    ],
+    "HDL": [
+      49.861896476729015,
+      11.469832059322261
+    ],
+    "Non_HDL": [
+      140.43736407133537,
+      35.87631433954637
+    ],
+    "Cho_HDL_Ratio": [
+      4.0629099608525445,
+      1.3525592245841898
+    ],
+    "Fingerstick_GLU_2": [
+      144.0735102218356,
+      42.56424449496231
+    ],
+    "Fingerstick_GLU_3": [
+      139.95802522836016,
+      42.19770803583291
+    ],
+    "Dexcom_minus_Fasting": [
+      2.347107438016529,
+      9.270123667325525
+    ],
+    "Carb_Fiber_Ratio": [
+      8.94664191229002,
+      4.872045784498054
+    ],
+    "Carb_Cal_Share": [
+      0.4298971849303307,
+      0.17914967514684987
+    ],
+    "TG_HDL_Ratio": [
+      2.7022107310822046,
+      1.507442280221774
+    ],
+    "Glucose_Range_60": [
+      17.1002609830361,
+      6.330446250948709
+    ],
+    "Rise_From_Min_60": [
+      7.161809482383645,
+      5.639673625738582
+    ],
+    "Microbiome_PC1": [
+      9.02472722235534e-16,
+      1.7089263394464267
+    ],
+    "Microbiome_PC2": [
+      -1.2362640030623753e-17,
+      0.8769611011191496
+    ],
+    "Microbiome_PC3": [
+      4.3269240107183135e-17,
+      0.841589481745576
+    ],
+    "Microbiome_PC4": [
+      1.2671706031389348e-16,
+      0.8029693875882475
+    ],
+    "Microbiome_PC5": [
+      -9.611952623809968e-16,
+      0.773138980221738
+    ]
+  },
+  "unscaled_cols": [
+    "Is_Weekend",
+    "Hour_sin",
+    "Hour_cos",
+    "Is_Male",
+    "Meal_Breakfast",
+    "Meal_Dinner",
+    "Meal_Lunch",
+    "Eth_African_American",
+    "Eth_Hispanic_Latino",
+    "Eth_White"
+  ],
+  "note": "Targets are in original units (mg/dL etc). Scaling params fit on train rows only."
+}
