@@ -1,0 +1,1 @@
+# Brandwise Platform core package

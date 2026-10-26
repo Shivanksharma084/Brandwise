@@ -1,0 +1,625 @@
+--- PAGE 1 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+PRD: Brandwise – Pre-Publication Brand
+Governance Platform
+Hackathon: Inkloom AI problem statement · Stage covered: Round 1 – The Plan · Working
+product name: Brandwise (rename freely) · Author: Shivank Atri (Sk) · Status: Draft v1 ·
+Date: 25 Oct 2026
+How to use this doc: it follows the Round 1 checklist from the problem statement, in
+order, and ends with a table mapping each section to the judging rubric
+(Understanding 25, Solution 25, Technical plan 20, Originality 15, Feasibility 15). Items
+marked [TEAM TO FILL] need real evidence from your own interviews. I have not
+invented any interview data.
+1. Executive Summary
+Organisations now publish through many hands: employees, agencies, freelancers and AI
+writing tools. Each source can drift from the approved tone, terminology, facts and visual
+identity. Brandwise is a review layer that sits between draft and publish. It checks content
+against the organisation's own approved guidelines, fact register and asset library. It
+explains every finding by citing the exact rule or source behind it, proposes a fix that
+keeps the creator's intent, and routes the decision to a human through a role-based
+approval workflow. It also learns where people keep failing and where the guidelines
+themselves are unclear.
+One-line pitch: A spell-checker for brand trust: it catches off-brand, unsupported or
+inaccessible content before it goes public, shows its working, and never overrides a human.
+Three named improvements (the Round 2 and 3 rubrics score "the three improvements
+you named", so we commit to them now):
+1. Source-grounded, explainable findings. Every flag shows the rule or fact it came from,
+a quoted excerpt, a confidence level and a plain-language reason. No source means no
+flag.
+2. Claim and fact verification. Numbers, superlatives, price/offer statements and health
+or financial claims are matched against an approved-facts register with owners and
+expiry dates. Unsupported or stale claims are flagged.
+3. Guideline-gap insights. Repeated overrides, disputed flags and recurring mistakes are
+clustered to show which guideline is ambiguous, outdated or missing. This turns the
+tool into a governance feedback loop for the brand team.
+Page 1 of 18
+
+--- PAGE 2 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+2. Problem Definition and Evidence
+2.1 Problem statement
+Brand inconsistency and false or unsupported claims reach the public because review
+happens late, manually, or not at all. Guidelines live in PDFs that nobody reads at the
+moment of writing. Reviewers become a bottleneck, and AI-generated drafts increase
+volume faster than humans can check.
+2.2 Why it is a real problem (secondary evidence)
+These numbers come from public sources found during research. Treat vendor surveys as
+directional, not as proof.
+# Evidence Source and caveat
+E1 In Lucidpress's 2019 State of Brand Lucidpress/Marq. Vendor survey (200–
+Consistency report, 81% of surveyed 450 respondents), self-reported.
+organisations said they deal with off-
+brand content; the 2021 edition reports
+77%.
+E2 Roughly 85% of organisations have brand Marq research as cited by a marketing
+guidelines, but only about 30% agency (Emulent); secondary citation.
+consistently enforce them. Verify against the original before
+presenting.
+E3 Respondents estimated revenue could Lucidpress 2019. Self-estimated
+rise by up to 33% with consistent expectation, not a measured causal
+branding (23% in the earlier edition). effect. Use cautiously.
+E4 India's ASCI reviewed 6,841 complaints ASCI Half-Yearly Complaints Report
+and investigated 6,117 ads in Apr–Sep 2025–26 (primary source).
+2025; 98% needed modification and 97%
+of violations were digital.
+E5 ASCI examined 1,173 influencer ads in ASCI report and press coverage (primary
+that period; 98% needed changes. In a and secondary).
+study of Forbes India's top digital stars,
+76% breached disclosure norms.
+E6 In food and beverage, 61% of violations ASCI report as summarised by trade
+among 211 ads scrutinised involved press.
+misleading health or nutrition claims.
+Page 2 of 18
+
+--- PAGE 3 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+# Evidence Source and caveat
+E7 A Canadian tribunal (Air Canada, 2024 Tribunal decision and law-firm
+BCCRT 149) held a company responsible commentary. Shows liability for AI-
+for wrong policy information its chatbot generated content.
+gave, rejecting the argument that the
+chatbot was a separate entity.
+E8 Incumbent tools (Writer, Vendor and review pages. Gap analysis in
+Acrolinx/Markup AI, Typeface, Marq, §6.3 is our own hypothesis.
+Grammarly Business, Adobe GenStudio)
+exist, confirming demand. They are
+aimed mainly at enterprises and are
+largely text-first.
+2.3 Primary evidence plan [TEAM TO FILL]
+The rubric rewards research, interviews, observation and surveys. Run these in the
+planning window (rule 2 of the general rules allows research before the build window
+starts):
+Interviews (target 8–10, 20 minutes each): 3 social media or content managers, 2
+brand or marketing leads, 2 agency or freelance creators, 1–2 compliance or legal
+reviewers, 1 startup founder who approves their own posts. Sources: college clubs and
+fests, local startups, LinkedIn contacts, family businesses.
+Survey (target 30+ responses, Google Form, 8 questions): how often content is
+corrected after publishing, who reviews, how guidelines are shared, tools used, what
+they would trust an AI reviewer to do.
+Observation (2 sessions): watch a real review round. Count how many rounds a post
+takes and how feedback is delivered (WhatsApp, email, comments).
+Artifact audit: collect 5 real brand guideline PDFs (public ones from companies are
+fine) and 20 public posts or ads. Measure how many guideline rules could be checked
+by a machine.
+Record for each finding: date, role, quote (with consent), and which requirement in §5
+it supports.
+Interview guide (core questions): Walk me through the last time something went out that
+should not have. How do you currently check content before posting? Where do
+guidelines live and when do you open them? What happens when two reviewers
+disagree? What would make you trust or distrust an AI suggestion? What content would
+you never upload to a third-party tool?
+Page 3 of 18
+
+--- PAGE 4 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Hypotheses to confirm or kill: H1 Most teams catch brand errors only after publishing. H2
+Reviewers spend most time on repetitive checks (terminology, disclaimers, logo use). H3
+People will accept AI suggestions only if the reason and source are visible. H4 Brand
+teams do not know which of their own rules are confusing.
+3. Target Users and Organisational Setting
+3.1 Setting
+Primary beachhead: small and mid-size organisations (20–500 people) with a marketing
+team plus external agencies or freelancers, and regulated or claim-sensitive categories
+(health and wellness, personal care, food, education, finance, real estate). In these
+categories, public regulators already police claims (see E4–E6). Stretch setting: larger
+enterprises with several regional teams.
+3.2 Personas and needs
+Role in product Who they are Core need Main pain today
+Creator Content writer, social Fast, private Vague feedback late
+media executive, feedback while in the process;
+designer, freelancer, drafting; fixes that guidelines hard to
+agency staff keep their message find
+Brand Manager / Marketing or brand Confidence that only Becomes a
+Approver lead compliant content bottleneck; reviews
+ships; fewer repeat the same mistakes
+corrections repeatedly
+Authorised Legal, compliance, Evidence for each Gets involved late; no
+Reviewer regional or product claim; clear audit trail record of why
+expert content was
+approved
+Brand Admin / Brand team owner, Maintain guidelines, No visibility into
+Governance operations facts, assets; see which rules are
+Owner where rules fail unclear or ignored
+Viewer / Auditor Leadership, external Read-only reports Cannot prove
+(optional) auditor and history process existed
+3.3 Jobs to be done
+When I finish a draft, I want to know what will get rejected before a manager sees it.
+Page 4 of 18
+
+--- PAGE 5 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+When I approve content, I want proof it was checked against the current rules and
+facts.
+When the same mistake happens again, I want to know whether people or the guideline
+is the problem.
+4. Proposed Solution and Value Proposition
+4.1 Value proposition
+For Value
+Creators Instant, explainable feedback with a suggested fix;
+fewer review rounds
+Managers Review time goes to judgement calls, not repetitive
+checks; one place for approvals
+Organisation Fewer public errors, fewer unsupported claims, an
+audit trail, and evidence-based guideline
+improvement
+4.2 Design principles (from the problem statement)
+1. Explain, do not just reject. Each finding includes what, where, why and a suggested
+alternative.
+2. Ground in approved sources. Findings cite a guideline clause, fact record or asset.
+Ungrounded AI opinions are labelled "advisory" and cannot block publishing.
+3. Human control. AI suggests; people decide. Only authorised roles can approve,
+override or waive.
+4. Preserve intent. Suggestions are minimal edits that keep meaning and voice.
+5. Protect confidential material. Tenant isolation, minimal data sent to external models,
+clear AI disclosure.
+6. Learn from repetition. Track patterns to improve guidelines, not to rank or punish
+individuals.
+4.3 End-to-end workflow
+1. Set up the brand workspace. Admin imports guidelines (PDF/DOCX/Markdown),
+which are parsed into atomic, citable rules (tone, terminology, messaging, legal
+disclaimers, visual rules, accessibility). Admin also loads the approved facts register
+Page 5 of 18
+
+--- PAGE 6 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+(statistic, value, source, owner, valid-until), a terminology list (preferred, banned, with
+examples), and assets (logos, palettes, fonts, templates).
+2. Creator submits content (text, image, PDF/DOCX, or social post with image) with
+metadata: channel, audience, campaign, and whether it is AI-assisted.
+3. Automated review pipeline runs deterministic checks first, then retrieval-grounded AI
+checks (see §6). Output: a list of findings with severity, category, evidence, source
+citation, confidence and suggested fix.
+4. Creator triage. Creator accepts, edits, rejects with reason, or asks for help on each
+finding. Suggested fixes appear as tracked changes, never auto-applied.
+5. Submit for approval. Content goes to a manager and, where rules require (for example
+health claims), an authorised reviewer. Comments, @mentions and version history are
+kept.
+6. Decision. Approve, request changes, or approve with documented override. Overrides
+require a reason and are logged.
+7. Export and publish handoff. Approved version is locked and exported with a review
+certificate (who, when, which guideline version). Direct publishing integrations are
+future scope.
+8. Insights loop. Dashboard shows top recurring issues, rules with high override or
+dispute rates ("unclear guideline" candidates), stale facts nearing expiry, and trends
+over time.
+4.4 Example findings (what judges should see in the demo)
+Content excerpt Flag Explanation and Suggested fix
+source
+"India's #1 skincare Unsupported claim No approved fact "One of India's top 5
+brand" (High) supports "#1". Fact skincare brands
+register has "top 5 in (2025 survey)"
+category, 2025
+survey" (owner:
+Market Research,
+expires Dec 2026).
+"Cures acne in 7 Regulated health Guideline §4.2 "Helps reduce the
+days" claim (High, needs prohibits cure and look of acne" +
+reviewer) time-bound outcome route to Legal
+claims without legal
+approval.
+Page 6 of 18
+
+--- PAGE 7 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Content excerpt Flag Explanation and Suggested fix
+source
+Paid collaboration Missing disclosure Influencer policy Add "#ad" at the
+post with no (High) requires a visible #ad start of the caption
+disclosure label; matches
+disclosure norms
+discussed in ASCI
+reports.
+"Hey guys!! Grab this Tone mismatch Brand voice: warm, "Hello! Here is an
+crazy deal" (Medium) professional, no offer we think you
+slang (Guideline will like."
+§2.1).
+Image with logo on Visual misuse Logo rules §6.3: clear Use asset "Logo-
+busy background, (Medium) space and no Primary-Light.svg";
+stretched distortion. link provided
+Light grey text on Accessibility Contrast ratio below Darken text colour;
+white, no alt text (Medium) WCAG 2.2 AA add description
+minimum for normal
+text; image has no alt
+text.
+5. Scope and Requirements
+5.1 Capability map against the problem statement
+Problem statement Planned feature Priority
+capability
+Import or define guidelines, Guideline ingestion into P0
+facts, terminology, assets rules; facts register;
+terminology manager; asset
+library
+Review text, images, Text, DOCX/PDF and image P0 (text, image), P1
+documents review (social-post style) (PDF/DOCX), P2
+(video/audio)
+Page 7 of 18
+
+--- PAGE 8 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Problem statement Planned feature Priority
+capability
+Detect tone, language, facts, Hybrid rule engine plus P0
+claims, visual, accessibility retrieval-grounded LLM
+issues checks; colour, contrast, alt
+text, logo checks
+Explain and cite guideline or Evidence card for each P0
+source finding with citation, excerpt
+and confidence
+Suggest corrections without Suggested edits as P0
+overriding humans accept/reject tracked
+changes
+Comments, approvals, Role-based workflow, P0 (core), P1 (diff polish)
+revision history, roles threaded comments, version
+diff, audit log
+Recurring problems and Issue analytics and P1 (core of improvement #3)
+governance insights guideline-gap detection
+Protect confidential Tenant isolation, encryption, P0 (baseline), P1 (advanced)
+material and disclose AI use redaction before model calls,
+AI-use labels
+5.2 Functional requirements (selected, testable)
+FR1 Brand knowledge base
+Upload guideline files; system proposes atomic rules, each with a clause reference.
+Admin must approve rules before they become active.
+Rules have type, severity, applicable channels, and version. Fact records have value,
+source link, owner and expiry date.
+Acceptance: a 20-page guideline PDF yields rule candidates that an admin can edit and
+publish within 15 minutes.
+FR2 Content submission
+Accept plain text, pasted social caption plus image, DOCX, PDF. Tag channel and
+campaign. Flag AI-assisted content.
+Acceptance: reviewing a 300-word caption plus one image returns findings in under 30
+seconds in the demo environment.
+FR3 Review engine
+Page 8 of 18
+
+--- PAGE 9 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Deterministic checks: banned or preferred terms, required disclaimers, regex for
+numbers and percentages, colour palette distance, contrast ratio, missing alt text,
+reading level.
+AI checks: tone fit, claim extraction and matching, messaging consistency, logo usage
+via vision model.
+Every finding has: id, category, severity, span or region, explanation, source reference,
+confidence, suggested fix, status.
+Acceptance: no finding is shown as "blocking" unless it traces to an active rule or fact
+record.
+FR4 Explanation and suggestion
+Evidence card shows quoted source clause, why the content conflicts, and a rewrite
+that keeps original meaning.
+Acceptance: in user tests, at least 80% of testers can state why a flag was raised after
+reading the card (to be measured).
+FR5 Workflow and roles
+Roles: Creator, Reviewer, Manager, Admin, Viewer. States: Draft → In Review → Changes
+Requested → Approved → Exported.
+Overrides require reason and approver identity. Approved versions are immutable;
+edits create a new version.
+Acceptance: audit log reconstructs who changed what and when for any approved
+item.
+FR6 Insights
+Metrics: findings by category, repeat-issue rate per rule, time to approval, review
+rounds per item, override and dispute rate per rule, facts near expiry.
+Guideline-gap detection: rules with high dispute or override rates, or findings where
+reviewers disagree, are surfaced with example cases and a suggested clarification.
+Insights are aggregated at team level by default. Individual-level views are admin-only
+and optional.
+FR7 Transparency and privacy
+Visible badge when AI or an external service processed content; list of external
+services in settings.
+Option to run in "local-only rules mode" without external AI for sensitive content.
+Page 9 of 18
+
+--- PAGE 10 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+5.3 Non-functional requirements
+Area Target
+Performance Typical review under 30 s (text plus one image);
+queue longer files
+Reliability Deterministic checks produce identical results on
+repeat runs; AI checks use fixed prompts, low
+temperature and schema-validated output
+Explainability 100% of blocking findings cite a source;
+unsupported AI observations labelled advisory
+Security Role-based access, tenant isolation, encryption in
+transit and at rest, audit log
+Accessibility The product's own UI aims for WCAG 2.2 AA:
+keyboard navigation, contrast, labels
+Usability New creator completes first review without
+training in under 5 minutes
+5.4 Out of scope for the hackathon
+Video and audio review, direct publishing to social platforms, multi-language support
+beyond English (Hindi as stretch), plagiarism detection, enterprise SSO, and automated
+legal judgement. These appear in the roadmap.
+6. Technical Plan
+6.1 Proposed architecture
+Frontend: Next.js (React) with Tailwind; rich-text editor (TipTap) for annotated content
+and tracked-change suggestions.
+Backend API: FastAPI (Python) for the review pipeline and workflow; REST with typed
+schemas (Pydantic).
+Database: PostgreSQL for users, roles, rules, facts, content versions, findings,
+comments and audit log; pgvector for embedding search over guideline chunks and
+facts.
+File storage: S3-compatible storage (MinIO locally, or Supabase Storage) with per-
+tenant prefixes.
+Background jobs: Celery or RQ with Redis for ingestion and long reviews.
+Page 10 of 18
+
+--- PAGE 11 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Auth: Supabase Auth or Auth.js with JWT; roles enforced in the API and by row-level
+security.
+6.2 Review pipeline (the technical core)
+1. Parse content into text blocks, claims and regions (PDF/DOCX with PyMuPDF and
+python-docx; OCR for images with Tesseract if needed).
+2. Deterministic layer: terminology match, regex for numbers and prices, required-
+disclaimer presence, WCAG contrast calculation, colour extraction against the brand
+palette, missing alt text, readability score.
+3. Retrieval layer: embed content spans and retrieve the top relevant rules and facts
+(guideline chunks, fact register, approved examples).
+4. LLM judgement layer (Claude API or equivalent, behind an adapter): for each span plus
+retrieved evidence, return structured JSON: {violation: bool, rule_id,
+evidence_quote, explanation, confidence, suggested_fix} . The model may only
+cite retrieved items; outputs that cite nothing are downgraded to advisory.
+5. Claim verification: extract claims (numbers, comparatives, superlatives,
+health/finance/legal claims); match to the facts register; classify as supported,
+contradicted, stale (expired) or no source found.
+6. Vision checks: vision model plus simple image processing for logo presence, distortion,
+clear space and palette adherence against asset-library references.
+7. Merge and rank: deduplicate, assign severity from rule metadata, attach citations, and
+store findings with the guideline version used.
+8. Calibration: keep a labelled test set (target 50–100 items) and report precision and
+recall for each category; tune thresholds before demo.
+6.3 Key technical decisions and rationale
+Decision Why
+Rules-first, LLM-second Deterministic checks are cheap, repeatable and
+explainable; LLMs handle fuzzy tone and meaning
+Retrieval-grounded citations only Prevents invented rules; supports explainability,
+which is a core judging theme
+Suggestions as tracked changes Respects human control and creator intent
+LLM behind an adapter Swap providers or use a local model for
+confidential tenants
+Page 11 of 18
+
+--- PAGE 12 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Decision Why
+Guideline versioning Every review stores which guideline version
+applied, so audits are reproducible
+Aggregate analytics by default Avoids a surveillance feel and builds trust
+6.4 Where we differ from existing tools (originality)
+Incumbents mostly focus on enterprise text governance or template-based creation. Our
+hypothesis for differentiation, to be validated in interviews:
+One workflow that covers text, claims, visuals and accessibility with an approvals
+trail.
+Claim verification against an owned facts register with expiry dates, not just style
+checks.
+Guideline-gap analytics that tell the brand team which rules are confusing, instead of
+only scoring writers.
+Affordable and lightweight for small and mid-size teams and agencies working across
+several clients.
+6.5 Data sources, models and integrations
+Item Plan
+Brand data Synthetic brand packs we create (2–3 fictional
+brands in different sectors) plus a public real-world
+guideline for realism; no confidential data in the
+demo
+Regulatory references Public rule sets as optional rule packs: ASCI
+advertising code and influencer disclosure
+guidance; WCAG 2.2 accessibility criteria
+Test content Hand-built set of compliant and non-compliant
+posts, captions and ads, labelled by the team
+AI models Claude or comparable LLM via API for judgement
+and rewriting; embedding model for retrieval;
+vision-capable model for images
+Libraries PyMuPDF, python-docx, Tesseract, colorthief or
+Pillow, axe-core for web content, TipTap, pgvector
+Page 12 of 18
+
+--- PAGE 13 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Item Plan
+Integrations (MVP) Google Drive import optional; export to PDF/DOCX
+with review certificate. Future: Slack/Teams
+approvals, Canva, Figma, WordPress, social
+schedulers
+Disclosure All external services and AI-generated code will be
+listed in the submission, as rule 7 and the integrity
+note require
+7. Responsible Design: Privacy, Security, Oversight
+7.1 Human oversight
+AI never publishes, deletes or overrides. It only flags and suggests.
+High-risk categories (health, finance, legal, children) always require an authorised
+reviewer.
+Every override needs a reason and is logged. Disputing a flag is one click and feeds the
+insights loop.
+Confidence levels shown; low-confidence findings labelled advisory.
+7.2 Privacy and confidentiality
+Tenant isolation for all brand materials; encryption in transit and at rest; signed,
+expiring file links.
+Data minimisation: send only the necessary spans and retrieved rule text to the model;
+redact emails, phone numbers and names where possible before external calls.
+Do not use customer content to train models. Choose providers with no-training API
+terms and state this in the UI.
+Retention controls and delete-on-request for content and brand packs.
+Local-only mode (rules and local models) for highly confidential content.
+India context: the DPDP Rules, 2025 were notified in November 2025 and are being
+phased in over roughly 18 months, with full operation around May 2027. Design for
+purpose limitation, notice, retention limits and breach readiness from the start, and
+keep personal data in the product (users' names, emails, comments) to a minimum.
+Page 13 of 18
+
+--- PAGE 14 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+7.3 Security
+Role-based access control and row-level security; audit log of reads and changes; secrets
+in environment vaults; dependency scanning; prompt-injection defences (treat uploaded
+content as data, never as instructions; strip or isolate embedded instructions); rate
+limiting; file type and size validation.
+7.4 Fairness, transparency and accessibility
+Clear "AI-assisted review" label and list of external services in settings.
+Style rules are the organisation's own; the tool does not invent norms. Inclusive-
+language rules are configurable.
+Insights default to team-level, so the product is not used to rank individuals unfairly.
+Product UI follows WCAG 2.2 AA basics; findings are never conveyed by colour alone.
+7.5 Risks and mitigations
+Risk Likelihood / Mitigation
+impact
+False positives annoy users High / Medium Rules-first, calibration on test set, easy
+dispute button, severity tuning
+False negatives give false Medium / High Clear message that the tool assists but
+assurance does not guarantee compliance;
+mandatory human approval; reviewer
+checklist
+LLM hallucination Medium / High Retrieval-only citations; schema
+validation; downgrade ungrounded
+outputs
+Confidential data leakage Low–Medium / Redaction, minimisation, local-only
+High mode, no-training provider terms
+Prompt injection via Medium / Content treated as untrusted data;
+uploaded files Medium isolation of instructions; output
+validation
+Scope too large for the High / High Strict P0 list; synthetic data; text and
+hackathon image first
+Over-reliance on automation Medium / Approval required; "AI can be wrong"
+Medium notices; reviewer sampling of auto-
+passed items
+Page 14 of 18
+
+--- PAGE 15 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+8. Success Metrics and Expected Impact
+Product metrics (measure in pilot and user tests):
+Metric Baseline (measure first) Target for demo
+Review rounds per Measured from Reduce by 30–50% in
+content item interviews/observation simulated task
+Time from draft to Measured in test Reduce by 30%
+approval
+Seeded-error detection n/a 80%+ for deterministic
+(recall) on labelled set categories; 70%+ for AI
+categories
+Precision of blocking n/a 85%+
+findings
+Explanation clarity (tester n/a 80%+
+can state reason)
+Suggestion acceptance n/a Track; aim above 50%
+rate
+Guideline gaps found n/a At least 3 genuine
+ambiguities surfaced from
+test data
+Organisational impact (hypotheses): fewer public corrections, fewer regulatory
+complaints on claims and disclosures, shorter onboarding for new writers and agencies,
+an auditable approval record, and better guidelines over time. Avoid promising revenue
+numbers; the 33% figure is a survey expectation, not a guaranteed result.
+9. Development Plan
+Dates depend on the official build window, which the organisers announce. Rule 1
+says only work done inside the window counts, so use the planning phase for
+research and design only, and start coding when the window opens. Tell me the
+window and team size and I will convert this to dated sprints.
+Page 15 of 18
+
+--- PAGE 16 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+9.1 Phases
+Phase Goal Deliverables
+0. Plan (now) Evidence and design Interviews, survey, this PRD,
+wireframes, synthetic brand
+packs, labelled test set draft
+1. Foundations Skeleton that runs Auth and roles, DB schema, text
+submission, workspace setup,
+terminology and facts CRUD
+2. Core review End-to-end workflow (Round 2 Guideline ingestion to rules,
+heart: "core workflow runs end deterministic checks, retrieval
+to end") plus LLM judgement, evidence
+cards, tracked-change
+suggestions, approval flow
+3. The three Deliver what we named Claim verification, citation and
+improvements confidence UX, insights and
+guideline-gap dashboard, image
+and accessibility checks
+4. Harden and finish Reliability and polish Calibration and test metrics,
+privacy features, audit log, error
+handling, usability fixes from
+user tests, demo data, docs,
+video
+9.2 Role allocation (adjust to actual team size)
+Role Owns
+Product and research lead Interviews, survey, PRD, user testing, demo script,
+presentation
+Backend and AI lead Review pipeline, retrieval, LLM prompts, claim
+verification, calibration
+Frontend and UX lead Editor, evidence cards, workflow screens, insights
+dashboard, accessibility
+Data, security and QA lead Database, roles and audit log, redaction, test set,
+CI, documentation
+Page 16 of 18
+
+--- PAGE 17 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+Each member should keep a short log of personal contributions with commit links, since
+judges may ask anyone to explain their part (rules 14–16).
+9.3 Cut line if time runs short
+Must ship: text review, facts register with claim check, evidence cards, approval
+workflow, basic insights. Next: image checks and DOCX/PDF. Drop first: PDF layout
+analysis, vision-based logo distortion, Hindi support.
+9.4 Testing and quality plan
+Unit tests for rule checks; golden-file tests for the pipeline; a labelled evaluation set
+reported per category; 5 user tests with think-aloud sessions; regression run before each
+demo; log the improvements made after each test round as evidence for Round 3.
+10. Open Questions and Assumptions
+Assumption: the beachhead is English-language marketing content for small and mid-
+size organisations and agencies. Confirm via interviews.
+Assumption: demo uses synthetic brands, so no real confidential data is involved.
+Open: official build window, team size, any mandated tech or cloud credits.
+Open: which regulated category to showcase (suggested: personal care or food, where
+claim violations are common in the ASCI data).
+Open: whether judges prefer a hosted demo or local install.
+11. Mapping to Round 1 Judging Rubric
+Criterion (points) Where this PRD addresses it
+Understanding of the problem (25) §2 evidence and research plan, §3 users and
+setting
+Proposed solution (25) §1 pitch and three improvements, §4 workflow and
+examples, §5 requirements
+Technical plan (20) §6 architecture, pipeline, decisions, data and
+models
+Originality (15) §1 three improvements, §6.4 differentiation
+Feasibility and scope (15) §5.4 out of scope, §9 phases, cut line, risks in §7.5
+Page 17 of 18
+
+--- PAGE 18 ---
+PRD – Brandwise: AI Brand-Governance Platform (Inkloom AI Hackathon, Round 1 – The Plan)
+12. References
+1. Marq (formerly Lucidpress), State of Brand Consistency reports, 2019 and 2021
+editions; summaries via pub.lucidpress.com, ASI Central, Bulldog Reporter, Review42,
+Emulent.
+2. Advertising Standards Council of India (ASCI), Half-Yearly Complaints Report 2025–26
+and press release, 11 Nov 2025; trade coverage by exchange4media, Impact,
+MediaNama, The Tribune; Moneylife on the FY2024–25 report.
+3. Moffatt v. Air Canada, 2024 BCCRT 149; commentary from Business Law Today, Manatt
+and Kiplinger.
+4. Digital Personal Data Protection Rules, 2025: Press Information Bureau release (17 Nov
+2025); AZB & Partners, Khaitan & Co, Hogan Lovells summaries.
+5. Product landscape: Writer, Acrolinx/Markup AI, Typeface, Marq, Grammarly Business,
+Adobe GenStudio; vendor and review pages (Contently, Capterra, Acrolinx).
+6. Source problem statement: Inkloom AI hackathon problem statement PDF.
+Statistics from vendor surveys are self-reported and may be dated; verify against originals
+before quoting them in the final submission.
+Page 18 of 18

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandwise • Official Certificate Verification</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Warm human-crafted typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <!-- jsPDF for direct PDF download from verification page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- QRCode.js for verifiable certificate QR embedding -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Newsreader"', 'serif'],
+            display: ['"Cinzel"', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              ivory: '#FAF8F5',
+              sand: '#F4EFEA',
+              slate: '#1E293B',
+              emerald: '#0D9488',
+              gold: '#D97706',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gold-seal {
+      background: radial-gradient(circle, #fde68a 0%, #d97706 70%, #92400e 100%);
+      box-shadow: 0 0 25px -4px rgba(217, 119, 6, 0.45);
+    }
+    .paper-texture {
+      background-color: #FAF8F5;
+      background-image: radial-gradient(#E2D9CE 0.75px, transparent 0.75px);
+      background-size: 20px 20px;
+    }
+    .human-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 217, 206, 0.9);
+      box-shadow: 0 10px 30px -5px rgba(27, 38, 59, 0.08), 0 0 1px 1px rgba(0, 0, 0, 0.02);
+    }
+  </style>
+</head>
+<body class="paper-texture min-h-screen text-slate-900 font-sans flex flex-col justify-between selection:bg-teal-100">
+
+  <!-- Top Minimalist Trust Bar -->
+  <div class="border-b border-[#E2D9CE] bg-white/70 backdrop-blur-md px-6 py-2.5 text-xs text-slate-500 flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="font-medium text-slate-700">Brandwise Public Cryptographic Verification Registry</span>
+    </div>
+    <div class="font-mono text-[11px] text-slate-500 hidden sm:block">
+      Registry Protocol: RFC-8841 • SHA-256 Validated
+    </div>
+  </div>
+
+  <!-- Main Verification Container -->
+  <main class="max-w-3xl mx-auto px-4 py-8 sm:py-12 w-full">
+
+    <!-- Warm Human Greeting & Verification Stamp -->
+    <div class="human-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+      <!-- Ornate background ribbon / accent -->
+      <div class="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-teal-500/10 to-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Verified Greeting Banner -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
+        <div class="flex items-center space-x-4">
+          <!-- Animated Verified Badge -->
+          <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center shrink-0 shadow-inner">
+            <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h1 class="text-xl sm:text-2xl font-serif font-bold text-slate-900 tracking-tight">
+                Certificate Authenticated
+              </h1>
+              <span class="bg-teal-100 text-teal-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                Official
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Verified & Sealed by Brandwise Pre-Publication Governance
+            </p>
+          </div>
+        </div>
+
+        <!-- Certificate Status Pill -->
+        <div class="text-right">
+          <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold font-mono">Audit Status</div>
+          <div class="text-sm font-bold text-teal-700 flex items-center space-x-1.5 justify-end">
+            <span class="w-2 h-2 rounded-full bg-teal-500 animate-ping"></span>
+            <span>ACTIVE & COMPLIANT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Human Welcome Statement -->
+      <div class="mt-6 p-4 rounded-2xl bg-[#F7F5F0] border border-[#E9E2D8] text-slate-700 text-sm leading-relaxed font-serif italic">
+        "Welcome to the Brandwise verification portal. This audit certificate has been cryptographically confirmed. The reviewed content and associated brand standards for <strong>DermaCare Global Healthcare</strong> satisfy all pre-publication claim substantiation, DPDP 2025 privacy regulations, and ASCI commercial disclosure guidelines."
+      </div>
+
+      <!-- Certificate Identity Grid -->
+      <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Certificate Identifier</span>
+          <span class="font-mono text-sm font-bold text-slate-900">BW-CERT-88419-2026</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Certified Enterprise Workspace</span>
+          <span class="font-semibold text-slate-900 text-sm">DermaCare Global Healthcare</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Governing Engine & Pipeline</span>
+          <span class="font-medium text-slate-800">Brandwise Governance Framework v2.4</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Compliance Standard</span>
+          <span class="font-semibold text-teal-700">ISO 9001:2015 & DPDP Act 2025</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Timestamp of Evaluation</span>
+          <span class="font-mono text-slate-700">2026-10-25 11:45:00 UTC</span>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+          <span class="text-slate-400 font-mono text-[10px] uppercase block">Validity & Recertification</span>
+          <span class="font-medium text-slate-700">Valid through October 25, 2027</span>
+        </div>
+      </div>
+
+      <!-- Scope of Certified Audit -->
+      <div class="mt-6 border-t border-slate-200/80 pt-6">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono mb-3">
+          Certified Pre-Publication Scope
+        </h2>
+        <ul class="text-xs space-y-2 text-slate-600">
+          <li class="flex items-start space-x-2">
+            <span class="text-teal-600 font-bold">✓</span>
+            <span><strong>Claim Substantiation:</strong> Regulated clinical claims grounded against approved Fact Register #FR-402 (94% confidence).</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-teal-600 font-bold">✓</span>
+            <span><strong>Influencer & Ad Disclosure:</strong> Mandatory #ad disclosure validated under ASCI Influencer Guidelines 2025 §1.1.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-teal-600 font-bold">✓</span>
+            <span><strong>Data Protection & Privacy Shield:</strong> Zero personal data retention enforced under India DPDP Act 2025.</span>
+          </li>
+          <li class="flex items-start space-x-2">
+            <span class="text-teal-600 font-bold">✓</span>
+            <span><strong>Immutable Audit Log:</strong> Cryptographic provenance record created under Submission #SUB-9021.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Cryptographic Proof Hash -->
+      <div class="mt-6 p-4 rounded-2xl bg-slate-900 text-slate-200 text-xs font-mono space-y-1">
+        <div class="text-[10px] text-teal-400 uppercase font-semibold">SHA-256 Cryptographic Audit Hash</div>
+        <div class="break-all text-emerald-400 font-bold">7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1f62193b290ac010371a39d892</div>
+      </div>
+
+      <!-- Authorized Signatures & Human Governance Seal -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-t border-slate-200/80 pt-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-full gold-seal flex items-center justify-center text-white text-lg font-bold shadow-md">
+            ★
+          </div>
+          <div class="text-xs">
+            <div class="font-bold text-slate-800">Brandwise Governance Authority</div>
+            <div class="text-slate-500 font-serif italic">Chief Compliance & Legal Affairs</div>
+          </div>
+        </div>
+
+        <div class="text-center sm:text-right text-xs">
+          <div class="font-serif italic text-base text-slate-900 font-bold">Dr. Aris Thorne</div>
+          <div class="text-slate-500 text-[11px]">Authorized Signatory & Chief Governance Officer</div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center gap-3">
+        <button
+          onclick="downloadOriginalPdf()"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center space-x-2 cursor-pointer"
+        >
+          <span>📥</span>
+          <span>Download Certificate PDF</span>
+        </button>
+        <a
+          href="index.html"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition flex items-center justify-center space-x-2 text-center"
+        >
+          <span>← Back to Brandwise Dashboard</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-slate-400 border-t border-[#E2D9CE] mt-8">
+    Brandwise AI Platform • Independent Trust & Governance Layer • Verified DPDP 2025
+  </footer>
+
+  <script>
+    function downloadOriginalPdf() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+      doc.setLineWidth(1.5);
+      doc.setDrawColor(16, 185, 129);
+      doc.rect(10, 10, 277, 190);
+      doc.setLineWidth(0.5);
+      doc.rect(13, 13, 271, 184);
+
+      // Top-Left Corner Logo Badge
+      doc.setFillColor(15, 23, 42);
+      doc.roundedRect(20, 18, 32, 16, 2, 2, 'F');
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(12);
+      doc.setTextColor(16, 185, 129);
+      doc.text("BRANDWISE", 36, 26, { align: "center" });
+      doc.setFontSize(7);
+      doc.setTextColor(255, 255, 255);
+      doc.text("AI GOVERNANCE", 36, 31, { align: "center" });
+
+      // Generate Real QR Code for Public Verification
+      let currentHost = window.location.hostname;
+      if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+        currentHost = '172.28.82.173'; // Local Wi-Fi IP for mobile scanning
+      }
+      const verifyUrl = window.location.protocol + '//' + currentHost + (window.location.port ? ':' + window.location.port : '') + window.location.pathname + window.location.search;
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      document.body.appendChild(tempDiv);
+
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(tempDiv, {
+          text: verifyUrl,
+          width: 128,
+          height: 128,
+          colorDark: "#0F172A",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+
+      setTimeout(() => {
+        try {
+          const canvas = tempDiv.querySelector('canvas') || tempDiv.querySelector('img');
+          if (canvas) {
+            const qrDataUrl = canvas.tagName.toLowerCase() === 'img' ? canvas.src : canvas.toDataURL('image/png');
+            doc.addImage(qrDataUrl, 'PNG', 246, 17, 22, 22);
+            doc.link(246, 17, 22, 22, { url: verifyUrl });
+          }
+        } catch (e) {
+          console.warn('QR image capture fallback:', e);
+        }
+        if (document.body.contains(tempDiv)) {
+          document.body.removeChild(tempDiv);
+        }
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(6);
+        doc.setTextColor(71, 85, 105);
+        doc.text("SCAN TO VERIFY", 257, 42, { align: "center" });
+
+        // Header / Title
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(26);
+        doc.setTextColor(15, 23, 42);
+        doc.text("BRANDWISE AI GOVERNANCE", 148.5, 28, { align: "center" });
+
+        doc.setFontSize(13);
+        doc.setTextColor(16, 185, 129);
+        doc.text("OFFICIAL COMPLIANCE & QUALITY MANAGEMENT CERTIFICATE", 148.5, 35, { align: "center" });
+
+        // Subtext
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(71, 85, 105);
+        doc.text("This is to certify that the enterprise workspace", 148.5, 50, { align: "center" });
+
+        // Organization Name
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DermaCare Global Healthcare", 148.5, 63, { align: "center" });
+
+        // Compliance text
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(71, 85, 105);
+        doc.text("has been rigorously evaluated and found in full compliance with the requirements of", 148.5, 75, { align: "center" });
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(15);
+        doc.setTextColor(16, 185, 129);
+        doc.text("ISO 9001:2015 & DPDP 2025 Brand Governance Standards", 148.5, 87, { align: "center" });
+
+        // Scope box
+        doc.setFillColor(241, 245, 249);
+        doc.roundedRect(35, 105, 227, 32, 3, 3, 'F');
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(30, 41, 59);
+        doc.text("• Multi-Layer Deterministic & LLM Content Review Pipeline (§4.2 Regulated Claims)", 45, 113);
+        doc.text("• Automated Claim & Fact Register Verification (Purpose Limitation & Zero-Retention)", 45, 121);
+        doc.text("• ASCI Influencer Commercial Disclosure Compliance & Cryptographic Audit Logging", 45, 129);
+
+        // Metadata block
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85);
+        doc.text("Certificate No : BW-CERT-88419-2026", 25, 155);
+        doc.text("Issue Date     : 2026-10-25", 25, 162);
+        doc.text("Expiry Date    : 2027-10-25", 25, 169);
+        doc.text("Pipeline Ver   : v2.4 (Active Standards)", 25, 176);
+
+        // Hash & Signer
+        doc.text("Cryptographic Hash:", 175, 155);
+        doc.setFont("Courier", "normal");
+        doc.setFontSize(8);
+        doc.text("7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1f", 175, 161);
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("Authorised Signature", 215, 175);
+        doc.setLineWidth(0.5);
+        doc.line(190, 170, 260, 170);
+
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Dr. Aris Thorne, Chief Governance Officer", 215, 180, { align: "center" });
+
+        doc.save("BW-CERT-88419-Governance-Certificate.pdf");
+      }, 120);
+    }
+  </script>
+</body>
+</html>

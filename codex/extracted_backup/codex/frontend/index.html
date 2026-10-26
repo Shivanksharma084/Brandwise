@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandwise • AI Brand Governance Platform</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+  <!-- Babel Standalone to compile JSX in browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.10/babel.min.js"></script>
+  <!-- jsPDF for High-Fidelity Audit Certificates -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+            tech: ['"Space Grotesk"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(10, 15, 20, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.4); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(16, 185, 129, 0.8); }
+
+    .glass-obsidian {
+      background: rgba(13, 20, 18, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .glass-emerald {
+      background: rgba(6, 26, 20, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(52, 211, 153, 0.28);
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.2);
+    }
+    .glass-studio {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.06);
+    }
+  </style>
+</head>
+<body class="transition-colors duration-300">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const INITIAL_FINDINGS = [
+      {
+        id: 'f-1',
+        category: 'claim',
+        severity: 'high',
+        highlightedText: "India's #1 skincare brand",
+        explanation: "Fact register does not substantiate '#1'. Nearest registered claim is 'top 5 in category, 2025 survey' (owner: Market Research, expires Dec 2026).",
+        sourceRef: "Fact Register #FR-402 (Market Position)",
+        confidence: 0.94,
+        suggestedFix: "One of India's top 5 skincare brands (2025 survey)",
+        status: 'open',
+      },
+      {
+        id: 'f-2',
+        category: 'claim',
+        severity: 'high',
+        highlightedText: "Cures acne in 7 days",
+        explanation: "Guidelines strictly prohibit curative or guaranteed time-bound medical outcomes without sign-off from Legal and Regulatory Affairs.",
+        sourceRef: "Guideline Clause §4.2 (Health & Regulated Claims)",
+        confidence: 0.99,
+        suggestedFix: "Helps reduce the look of acne",
+        status: 'open',
+      },
+      {
+        id: 'f-3',
+        category: 'disclaimer',
+        severity: 'high',
+        highlightedText: "Use code GLOW20 for discount!",
+        explanation: "Promotional commercial collaboration post lacks the mandatory prominent disclosure tag (#ad) as mandated by ASCI Influencer Code 2025.",
+        sourceRef: "ASCI Influencer Code 2025 §1.1",
+        confidence: 0.91,
+        suggestedFix: "Add #ad at the beginning of the caption",
+        status: 'open',
+      },
+      {
+        id: 'f-4',
+        category: 'tone',
+        severity: 'medium',
+        highlightedText: "Hey guys!! Grab this crazy deal",
+        explanation: "Informal slang greeting conflicts with approved Brand Voice standard (warm, professional, accessible).",
+        sourceRef: "Guideline Clause §2.1 (Tone & Language)",
+        confidence: 0.88,
+        suggestedFix: "Hello! Here is an offer we think you will like.",
+        status: 'open',
+      },
+    ];
+
+    function BrandwiseDashboard() {
+      const [theme, setTheme] = useState('obsidian');
+      const [activeTab, setActiveTab] = useState('review');
+      const [content, setContent] = useState(
+        "Hey guys!! Grab this crazy deal right now! Discover India's #1 skincare brand that cures acne in 7 days! Use code GLOW20 for discount!"
+      );
+      const [findings, setFindings] = useState(INITIAL_FINDINGS);
+      const [isAnalyzing, setIsAnalyzing] = useState(false);
+      const [selectedChannel, setSelectedChannel] = useState('Instagram Caption');
+      const [isAiAssisted, setIsAiAssisted] = useState(true);
+      const [showCertificate, setShowCertificate] = useState(false);
+      const [notification, setNotification] = useState(null);
+      const [certificateDownloaded, setCertificateDownloaded] = useState(false);
+
+      // Profile dropdown menu state
+      const [showProfileMenu, setShowProfileMenu] = useState(false);
+      const profileMenuRef = useRef(null);
+
+      // Close profile menu on outside click
+      useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+            setShowProfileMenu(false);
+          }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+      }, []);
+
+      const isDark = theme !== 'studio';
+
+      const bgStyle =
+        theme === 'obsidian'
+          ? 'bg-[#090F0D] text-emerald-50'
+          : theme === 'mint'
+          ? 'bg-[#04140F] text-emerald-100'
+          : 'bg-[#F9FAF9] text-slate-900';
+
+      const cardStyle =
+        theme === 'obsidian'
+          ? 'glass-obsidian'
+          : theme === 'mint'
+          ? 'glass-emerald'
+          : 'glass-studio';
+
+      const headerBorder =
+        theme === 'obsidian'
+          ? 'border-emerald-500/15'
+          : theme === 'mint'
+          ? 'border-emerald-500/30'
+          : 'border-slate-200';
+
+      const accentBtn =
+        theme === 'obsidian'
+          ? 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25'
+          : theme === 'mint'
+          ? 'bg-gradient-to-r from-teal-400 to-emerald-500 hover:from-teal-300 hover:to-emerald-400 text-slate-950 font-bold shadow-lg shadow-emerald-400/30'
+          : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm font-semibold';
+
+      const triggerNotification = (msg) => {
+        setNotification(msg);
+        setTimeout(() => setNotification(null), 3500);
+      };
+
+      const handleAcceptFix = (id, original, fix) => {
+        setContent((prev) => prev.replace(original, fix));
+        setFindings((prev) =>
+          prev.map((f) => (f.id === id ? { ...f, status: 'accepted' } : f))
+        );
+        triggerNotification(`Applied fix: "${fix}"`);
+      };
+
+      const handleReject = (id) => {
+        setFindings((prev) =>
+          prev.map((f) => (f.id === id ? { ...f, status: 'rejected' } : f))
+        );
+        triggerNotification(`Ignored finding.`);
+      };
+
+      const handleDispute = (id) => {
+        const reason = prompt('Please provide a reason for disputing this guideline rule (feeds Gap Insights engine):');
+        if (reason) {
+          setFindings((prev) =>
+            prev.map((f) => (f.id === id ? { ...f, status: 'disputed', disputeReason: reason } : f))
+          );
+          triggerNotification(`Dispute logged into Gap-Detection Model.`);
+        }
+      };
+
+      const handleRouteLegal = (id) => {
+        setFindings((prev) =>
+          prev.map((f) => (f.id === id ? { ...f, status: 'routed_legal' } : f))
+        );
+        triggerNotification(`Claim flagged & routed to Legal & Regulatory desk.`);
+      };
+
+      const handleRunReview = () => {
+        setIsAnalyzing(true);
+        setTimeout(() => {
+          setIsAnalyzing(false);
+          setFindings(INITIAL_FINDINGS.map(f => ({ ...f, status: 'open' })));
+          triggerNotification('Governance pipeline completed! 4 findings detected and grounded.');
+        }, 1100);
+      };
+
+      const openFindingsCount = findings.filter((f) => f.status === 'open').length;
+      const complianceScore = Math.round(100 - (openFindingsCount * 17.5));
+
+      // jsPDF Certificate Generator matching auditcertificate.jpg reference
+      const generatePdfCertificate = () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+        // Page dimensions for A4 landscape: 297 x 210 mm
+        // Outer double border in emerald/teal
+        doc.setLineWidth(1.5);
+        doc.setStrokeColor(16, 185, 129);
+        doc.rect(10, 10, 277, 190);
+        doc.setLineWidth(0.5);
+        doc.rect(13, 13, 271, 184);
+
+        // Header / Title
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(26);
+        doc.setTextColor(15, 23, 42);
+        doc.text("BRANDWISE AI GOVERNANCE", 148.5, 28, { align: "center" });
+
+        doc.setFontSize(13);
+        doc.setTextColor(16, 185, 129);
+        doc.text("OFFICIAL COMPLIANCE & QUALITY MANAGEMENT CERTIFICATE", 148.5, 35, { align: "center" });
+
+        // Subtext
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(71, 85, 105);
+        doc.text("This is to certify that the enterprise workspace", 148.5, 50, { align: "center" });
+
+        // Organization Name
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DermaCare Global Healthcare", 148.5, 63, { align: "center" });
+
+        // Compliance text
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(71, 85, 105);
+        doc.text("has been rigorously evaluated and found in full compliance with the requirements of", 148.5, 75, { align: "center" });
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(15);
+        doc.setTextColor(16, 185, 129);
+        doc.text("ISO 9001:2015 & DPDP 2025 Brand Governance Standards", 148.5, 87, { align: "center" });
+
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(71, 85, 105);
+        doc.text("for the following approved scope of pre-publication review and automated validation:", 148.5, 98, { align: "center" });
+
+        // Scope box
+        doc.setFillColor(241, 245, 249);
+        doc.roundedRect(35, 105, 227, 32, 3, 3, 'F');
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(30, 41, 59);
+        doc.text("• Multi-Layer Deterministic & LLM Content Review Pipeline (§4.2 Regulated Claims)", 45, 113);
+        doc.text("• Automated Claim & Fact Register Verification (Purpose Limitation & Zero-Retention)", 45, 121);
+        doc.text("• ASCI Influencer Commercial Disclosure Compliance & Cryptographic Audit Logging", 45, 129);
+
+        // Metadata block (left)
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(51, 65, 85);
+        doc.text("Certificate No : BW-CERT-88419-2026", 25, 155);
+        doc.text("Issue Date     : 2026-10-25", 25, 162);
+        doc.text("Expiry Date    : 2027-10-25", 25, 169);
+        doc.text("Pipeline Ver   : v2.4 (Active Standards)", 25, 176);
+
+        // Hash & Footer (right)
+        doc.text("Cryptographic Hash:", 175, 155);
+        doc.setFont("Courier", "normal");
+        doc.setFontSize(8);
+        doc.text("7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1f", 175, 161);
+
+        doc.setFont("Helvetica", "bold");
+        doc.setFontSize(11);
+        doc.text("Authorised Signature", 215, 175);
+        doc.setLineWidth(0.5);
+        doc.line(190, 170, 260, 170);
+
+        doc.setFont("Helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Dr. Aris Thorne, Chief Governance Officer", 215, 180, { align: "center" });
+
+        doc.save("BW-CERT-88419-Governance-Certificate.pdf");
+        setCertificateDownloaded(true);
+        triggerNotification('Official PDF Certificate downloaded successfully!');
+      };
+
+      const certificateText =
+`=============================================================
+         BRANDWISE AI GOVERNANCE & COMPLIANCE CERTIFICATE
+=============================================================
+Certificate ID       : BW-CERT-88419-2026
+Verified Engine      : Brandwise Governance Pipeline v2.4
+Enterprise Tenant    : DermaCare Global Healthcare
+Timestamp            : 2026-10-25T11:45:00Z
+Status               : Approved with Documented Creator Overrides
+DPDP 2025 Compliance : Verified (Purpose Limitation & Zero-Retention)
+Cryptographic Hash   : 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1f
+Verification Signer  : Automated Pre-Publication Guardrails
+=============================================================
+Cryptographically stamped and sealed by Brandwise Platform.`;
+
+      return (
+        <div className={`min-h-screen ${bgStyle} flex flex-col font-sans transition-colors duration-300 relative overflow-x-hidden`}>
+          {/* Ambient Emerald Glows */}
+          {theme === 'obsidian' && (
+            <div className="absolute top-0 left-1/4 w-[600px] h-[350px] bg-emerald-600/10 blur-[130px] pointer-events-none rounded-full" />
+          )}
+          {theme === 'mint' && (
+            <>
+              <div className="absolute top-0 right-1/4 w-[500px] h-[300px] bg-teal-500/15 blur-[120px] pointer-events-none rounded-full" />
+              <div className="absolute bottom-10 left-10 w-[400px] h-[300px] bg-emerald-600/15 blur-[140px] pointer-events-none rounded-full" />
+            </>
+          )}
+
+          {/* Floating Toast Notification */}
+          {notification && (
+            <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-2xl text-xs font-medium flex items-center space-x-3 transition-all duration-300 ${
+              isDark ? 'bg-slate-900/95 text-white border border-emerald-500/40 backdrop-blur-lg' : 'bg-slate-900 text-white'
+            }`}>
+              <span className="flex h-2.5 w-2.5 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span>{notification}</span>
+            </div>
+          )}
+
+          {/* Main Top Header with High z-index to avoid clipping dropdowns */}
+          <header className={`px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 border-b ${headerBorder} ${
+            isDark ? 'bg-[#090F0D]/85 backdrop-blur-xl' : 'bg-white/85 backdrop-blur-xl'
+          }`}>
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg relative overflow-hidden bg-gradient-to-tr from-emerald-600 to-teal-400 text-slate-950 shadow-emerald-500/25">
+                <span className="relative z-10 font-black">B</span>
+              </div>
+              <div>
+                <div className="flex items-center space-x-2.5">
+                  <h1 className="text-base font-bold tracking-tight">Brandwise</h1>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border bg-emerald-500/15 text-emerald-400 border-emerald-500/30 font-mono">
+                    AI Pre-Publication
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border bg-white/5 border-white/10 text-emerald-400">
+                    DPDP 2025 Ready
+                  </span>
+                </div>
+                <p className={`text-xs ${isDark ? 'text-emerald-400/80' : 'text-emerald-700'}`}>
+                  Pre-Publication Brand Governance & Compliance Platform
+                </p>
+              </div>
+            </div>
+
+            {/* Right Controls & Profile Menu */}
+            <div className="flex items-center space-x-4">
+              <div className={`flex items-center p-1 rounded-xl border text-xs font-medium space-x-1 ${
+                isDark ? 'bg-black/40 border-emerald-500/20' : 'bg-slate-100 border-slate-200'
+              }`}>
+                <button
+                  onClick={() => setTheme('obsidian')}
+                  className={`px-2.5 py-1 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+                    theme === 'obsidian' ? 'bg-emerald-600 text-slate-950 font-bold shadow' : isDark ? 'text-emerald-400 hover:text-white' : 'text-slate-600'
+                  }`}
+                >
+                  <span>🌿</span>
+                  <span className="hidden sm:inline">Jade Obsidian</span>
+                </button>
+                <button
+                  onClick={() => setTheme('mint')}
+                  className={`px-2.5 py-1 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+                    theme === 'mint' ? 'bg-teal-400 text-slate-950 font-bold shadow' : isDark ? 'text-emerald-400 hover:text-white' : 'text-slate-600'
+                  }`}
+                >
+                  <span>⚡</span>
+                  <span className="hidden sm:inline">Cyber Mint</span>
+                </button>
+                <button
+                  onClick={() => setTheme('studio')}
+                  className={`px-2.5 py-1 rounded-lg transition flex items-center space-x-1.5 cursor-pointer ${
+                    theme === 'studio' ? 'bg-emerald-600 text-white font-bold shadow' : isDark ? 'text-emerald-400 hover:text-white' : 'text-slate-600'
+                  }`}
+                >
+                  <span>💎</span>
+                  <span className="hidden sm:inline">Studio Light</span>
+                </button>
+              </div>
+
+              {/* Certificate Action */}
+              <button
+                onClick={() => setShowCertificate(true)}
+                className={`text-xs px-3.5 py-1.5 rounded-xl font-medium transition cursor-pointer flex items-center space-x-2 ${
+                  isDark ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-900 hover:bg-slate-800 text-white'
+                }`}
+              >
+                <span>📜</span>
+                <span>Audit Certificate</span>
+              </button>
+
+              {/* Profile Icon with Interactive Dropdown Menu */}
+              <div className="relative" ref={profileMenuRef}>
+                <button
+                  onClick={() => setShowProfileMenu((prev) => !prev)}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold ring-2 bg-emerald-500/20 text-emerald-300 ring-emerald-500/40 cursor-pointer hover:ring-emerald-400 transition shadow-md"
+                  title="Brandwise Profile & Settings"
+                >
+                  BW
+                </button>
+
+                {showProfileMenu && (
+                  <div
+                    style={{ zIndex: 9999 }}
+                    className={`absolute right-0 mt-3 w-72 rounded-2xl shadow-2xl border py-2.5 text-xs font-sans animate-in fade-in zoom-in-95 duration-150 ${
+                      isDark
+                        ? 'bg-[#0E1614] border-emerald-500/30 text-emerald-100 shadow-2xl shadow-black/90'
+                        : 'bg-white border-slate-200 text-slate-800 shadow-2xl shadow-slate-900/20'
+                    }`}
+                  >
+                    {/* User Profile Header */}
+                    <div className="px-4 py-3 border-b border-emerald-500/20 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-sm text-emerald-400">Shivank Sharma</span>
+                        <span className="bg-emerald-500/20 text-emerald-300 font-mono text-[10px] px-2 py-0.5 rounded border border-emerald-500/30 font-semibold">
+                          Admin
+                        </span>
+                      </div>
+                      <div className="text-[11px] opacity-75 truncate">shivank.sharma@dermacare.com</div>
+                      <div className="text-[10px] text-emerald-500/80 font-mono pt-0.5">
+                        Tenant: DermaCare Global Healthcare
+                      </div>
+                    </div>
+
+                    {/* Options List */}
+                    <div className="py-1.5 space-y-0.5">
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          triggerNotification('Opened Workspace Settings & API Keys.');
+                        }}
+                        className={`w-full text-left px-4 py-2.5 flex items-center justify-between transition cursor-pointer ${
+                          isDark ? 'hover:bg-emerald-500/15 text-emerald-100' : 'hover:bg-slate-100 text-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-base">🏢</span>
+                          <span className="font-medium">Tenant & Brand Settings</span>
+                        </div>
+                        <span className="text-[10px] opacity-60">→</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          triggerNotification('Workspace Audit Log (CSV) exported!');
+                        }}
+                        className={`w-full text-left px-4 py-2.5 flex items-center justify-between transition cursor-pointer ${
+                          isDark ? 'hover:bg-emerald-500/15 text-emerald-100' : 'hover:bg-slate-100 text-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-base">📊</span>
+                          <span className="font-medium">Download Audit Logs (CSV)</span>
+                        </div>
+                        <span className="text-[10px] opacity-60">📥</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          triggerNotification('Privacy Shield: Zero Data Retention Enforced.');
+                        }}
+                        className={`w-full text-left px-4 py-2.5 flex items-center justify-between transition cursor-pointer ${
+                          isDark ? 'hover:bg-emerald-500/15 text-emerald-100' : 'hover:bg-slate-100 text-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-base">🛡️</span>
+                          <span className="font-medium">Privacy Shield Status</span>
+                        </div>
+                        <span className="text-[10px] text-emerald-400 font-bold">Active</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          triggerNotification('WCAG 2.2 AA Contrast Verified.');
+                        }}
+                        className={`w-full text-left px-4 py-2.5 flex items-center justify-between transition cursor-pointer ${
+                          isDark ? 'hover:bg-emerald-500/15 text-emerald-100' : 'hover:bg-slate-100 text-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-2.5">
+                          <span className="text-base">👁️</span>
+                          <span className="font-medium">WCAG 2.2 Accessibility</span>
+                        </div>
+                        <span className="text-[10px] opacity-60">AA Pass</span>
+                      </button>
+                    </div>
+
+                    {/* Logout Footer */}
+                    <div className="border-t border-emerald-500/20 pt-1 mt-1">
+                      <button
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          triggerNotification('Signed out of Brandwise session.');
+                        }}
+                        className="w-full text-left px-4 py-2 flex items-center space-x-2 text-rose-400 hover:bg-rose-500/10 font-medium transition cursor-pointer"
+                      >
+                        <span>🚪</span>
+                        <span>Sign Out of Session</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </header>
+
+          <div className="flex-1 flex overflow-hidden">
+            {/* Sidebar Navigation */}
+            <aside className={`w-64 p-4 space-y-1.5 border-r flex flex-col justify-between shrink-0 ${headerBorder} ${
+              isDark ? 'bg-[#090F0D]/60' : 'bg-white'
+            }`}>
+              <div className="space-y-1.5">
+                <div className={`text-[11px] font-semibold uppercase tracking-wider px-3 mb-2 font-mono ${
+                  isDark ? 'text-emerald-400/70' : 'text-emerald-800'
+                }`}>
+                  Platform Modules
+                </div>
+
+                <button
+                  onClick={() => setActiveTab('review')}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                    activeTab === 'review'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold'
+                      : isDark ? 'text-emerald-400/80 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-base">✨</span>
+                    <span>Content Review</span>
+                  </div>
+                  {openFindingsCount > 0 && (
+                    <span className="bg-rose-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                      {openFindingsCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('knowledge')}
+                  className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                    activeTab === 'knowledge'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold'
+                      : isDark ? 'text-emerald-400/80 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="text-base">📚</span>
+                  <span>Rules & Facts Register</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('insights')}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                    activeTab === 'insights'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold'
+                      : isDark ? 'text-emerald-400/80 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-base">📈</span>
+                    <span>Gap Insights</span>
+                  </div>
+                  <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                    Feature #3
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('audit')}
+                  className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer ${
+                    activeTab === 'audit'
+                      ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold'
+                      : isDark ? 'text-emerald-400/80 hover:text-white hover:bg-white/5' : 'text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="text-base">🛡️</span>
+                  <span>Audit Trail</span>
+                </button>
+              </div>
+
+              {/* Bottom Shield & Telemetry Card */}
+              <div className="space-y-3 pt-4 border-t border-emerald-500/15">
+                <div className={`p-3.5 rounded-xl border ${
+                  isDark ? 'bg-black/30 border-emerald-500/20' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <div className="flex items-center justify-between text-xs font-semibold mb-2">
+                    <span className={isDark ? 'text-emerald-300' : 'text-slate-700'}>Compliance Score</span>
+                    <span className="font-mono font-bold text-emerald-400">
+                      {complianceScore}%
+                    </span>
+                  </div>
+                  <div className={`w-full h-1.5 rounded-full overflow-hidden ${isDark ? 'bg-white/10' : 'bg-slate-200'}`}>
+                    <div
+                      className="h-full transition-all duration-700 bg-gradient-to-r from-emerald-500 to-teal-400"
+                      style={{ width: `${complianceScore}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] mt-2.5 text-emerald-400/70">
+                    <span>Privacy & AI Shield</span>
+                    <span className="text-emerald-400 flex items-center space-x-1 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                      <span>Enforced</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="flex-1 p-8 overflow-y-auto">
+              {activeTab === 'review' && (
+                <div className="max-w-5xl mx-auto space-y-6">
+                  {/* Draft Content Card */}
+                  <div className={`p-6 rounded-2xl border transition-all ${cardStyle} ${headerBorder} space-y-4`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                        <h2 className={`text-base font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                          Pre-Publication Content Ingestion
+                        </h2>
+                      </div>
+
+                      <div className="flex items-center space-x-3 text-xs">
+                        <div className="flex items-center space-x-2">
+                          <span className={isDark ? 'text-emerald-400/80' : 'text-slate-500'}>Channel:</span>
+                          <select
+                            value={selectedChannel}
+                            onChange={(e) => setSelectedChannel(e.target.value)}
+                            className={`rounded-lg px-2.5 py-1.5 font-medium border text-xs focus:outline-none ${
+                              isDark ? 'bg-black/60 border-emerald-500/20 text-emerald-200' : 'bg-slate-100 border-slate-200'
+                            }`}
+                          >
+                            <option>Instagram Caption</option>
+                            <option>LinkedIn Thought Leadership</option>
+                            <option>Google Ads Copy</option>
+                            <option>Blog Article Draft</option>
+                          </select>
+                        </div>
+
+                        <label className="flex items-center space-x-2 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={isAiAssisted}
+                            onChange={(e) => setIsAiAssisted(e.target.checked)}
+                            className="rounded text-emerald-500 focus:ring-0"
+                          />
+                          <span className={isDark ? 'text-emerald-200' : 'text-slate-600'}>AI-Assisted Draft</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="relative">
+                      <textarea
+                        rows={4}
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        className={`w-full p-4 border rounded-xl text-sm focus:outline-none transition-all leading-relaxed ${
+                          isDark
+                            ? 'bg-black/40 border-emerald-500/20 text-emerald-100 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20'
+                            : 'bg-white border-slate-200 text-slate-800 focus:ring-2 focus:ring-emerald-500'
+                        }`}
+                        placeholder="Paste draft copy to evaluate against brand rules..."
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <div className="flex items-center space-x-3 text-xs text-emerald-400/70">
+                        <span>Pipeline: <strong className={isDark ? 'text-emerald-200' : 'text-slate-700'}>Brandwise AI v2.4</strong></span>
+                        <span>•</span>
+                        <span>Confidence Threshold: <strong className={isDark ? 'text-emerald-200' : 'text-slate-700'}>0.85</strong></span>
+                      </div>
+
+                      <button
+                        onClick={handleRunReview}
+                        disabled={isAnalyzing}
+                        className={`px-6 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center space-x-2.5 cursor-pointer disabled:opacity-50 ${accentBtn}`}
+                      >
+                        {isAnalyzing ? (
+                          <>
+                            <span className="animate-spin">🌀</span>
+                            <span>Evaluating Governance Pipeline...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>⚡</span>
+                            <span>Execute Governance Review</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Findings Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className={`text-base font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                          Source-Grounded Evidence Cards
+                        </h3>
+                        <p className={`text-xs ${isDark ? 'text-emerald-400/70' : 'text-slate-500'}`}>
+                          Every flag cites an approved brand rule, clinical standard, or fact register record. Zero hallucinations.
+                        </p>
+                      </div>
+                      <span className="text-xs px-3 py-1 rounded-full font-mono font-medium border bg-rose-500/10 text-rose-400 border-rose-500/30">
+                        {openFindingsCount} Open Violation{openFindingsCount !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+
+                    {findings.map((finding) => (
+                      <div
+                        key={finding.id}
+                        className={`border rounded-2xl p-5 space-y-3.5 transition-all duration-300 relative overflow-hidden ${cardStyle} ${
+                          finding.status === 'accepted'
+                            ? 'border-emerald-500/40 opacity-55'
+                            : finding.status === 'rejected'
+                            ? 'border-slate-500/30 opacity-50'
+                            : finding.severity === 'high'
+                            ? 'border-rose-500/40 shadow-lg'
+                            : 'border-amber-500/40'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center space-x-2">
+                              <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
+                                finding.severity === 'high'
+                                  ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                                  : 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                              }`}>
+                                {finding.category.toUpperCase()} • {finding.severity.toUpperCase()} SEVERITY
+                              </span>
+
+                              {finding.status !== 'open' && (
+                                <span className="text-xs font-mono font-semibold uppercase px-2 py-0.5 rounded bg-slate-500/20 text-slate-400">
+                                  [{finding.status.replace('_', ' ')}]
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm font-semibold mt-1">
+                              Violation in text span: <span className={`px-2 py-0.5 rounded font-mono font-normal text-xs ${
+                                isDark ? 'bg-rose-950/50 text-rose-300 border border-rose-500/20' : 'bg-rose-50 text-rose-900 border border-rose-200'
+                              }`}>"{finding.highlightedText}"</span>
+                            </p>
+                          </div>
+
+                          <div className="text-right font-mono text-xs text-emerald-400/80">
+                            Confidence: <strong className="text-emerald-400">
+                              {(finding.confidence * 100).toFixed(0)}%
+                            </strong>
+                          </div>
+                        </div>
+
+                        <div className={`text-xs p-3.5 rounded-xl space-y-1.5 border ${
+                          isDark ? 'bg-black/30 border-emerald-500/10 text-emerald-200' : 'bg-slate-50 border-slate-200 text-slate-600'
+                        }`}>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-emerald-400 font-bold">Citation:</span>
+                            <span className="font-mono text-emerald-300 font-medium">{finding.sourceRef}</span>
+                          </div>
+                          <div>
+                            <span className="font-semibold text-emerald-400/70">Governance Reason: </span>
+                            <span>{finding.explanation}</span>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 flex items-center justify-between border-t border-emerald-500/15">
+                          <div className="text-xs flex items-center space-x-2">
+                            <span className="text-emerald-400/70">Suggested Tracked Change: </span>
+                            <span className={`font-mono font-medium px-2.5 py-1 rounded-lg border ${
+                              isDark ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30' : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                            }`}>
+                              {finding.suggestedFix}
+                            </span>
+                          </div>
+
+                          {finding.status === 'open' && (
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleDispute(finding.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${
+                                  isDark ? 'bg-white/5 hover:bg-white/10 text-emerald-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                                }`}
+                              >
+                                Dispute Rule
+                              </button>
+                              <button
+                                onClick={() => handleReject(finding.id)}
+                                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${
+                                  isDark ? 'bg-white/5 hover:bg-white/10 text-emerald-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                                }`}
+                              >
+                                Ignore
+                              </button>
+                              {finding.category === 'claim' && (
+                                <button
+                                  onClick={() => handleRouteLegal(finding.id)}
+                                  className="text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-lg font-medium transition cursor-pointer"
+                                >
+                                  Route to Legal
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleAcceptFix(finding.id, finding.highlightedText, finding.suggestedFix)}
+                                className={`text-xs px-4 py-1.5 rounded-lg font-bold transition cursor-pointer shadow-sm ${accentBtn}`}
+                              >
+                                Accept Fix
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'insights' && (
+                <div className="max-w-5xl mx-auto space-y-6">
+                  <div>
+                    <h2 className={`text-lg font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                      Guideline-Gap Insights & Ambiguity Detector (Named Feature #3)
+                    </h2>
+                    <p className={`text-xs ${isDark ? 'text-emerald-400/70' : 'text-slate-500'}`}>
+                      Unsupervised clustering over creator overrides, disputes, and editorial bottlenecks flags ambiguous or outdated rules.
+                    </p>
+                  </div>
+
+                  <div className={`p-6 rounded-2xl border ${cardStyle} ${headerBorder} space-y-4`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2.5">
+                        <span className="text-xs bg-amber-500/15 text-amber-400 font-bold px-2.5 py-0.5 rounded-full border border-amber-500/30 uppercase font-mono">
+                          High Override Cluster (42%)
+                        </span>
+                        <h3 className={`font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                          Guideline Clause §2.1 (Tone & Language)
+                        </h3>
+                      </div>
+                      <span className="text-xs font-mono text-emerald-400/80">18 Disputes Logged This Cycle</span>
+                    </div>
+
+                    <p className={`text-sm leading-relaxed ${isDark ? 'text-emerald-200/90' : 'text-slate-600'}`}>
+                      Creators consistently override the rule banning colloquial greetings ("Hey guys") on Instagram Reels and TikTok. Review telemetry indicates creative teams find the standard overly rigid for informal short-form video.
+                    </p>
+
+                    <div className={`p-4 rounded-xl border space-y-1.5 ${
+                      isDark ? 'bg-emerald-950/30 border-emerald-500/30' : 'bg-emerald-50 border-emerald-100'
+                    }`}>
+                      <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wide font-mono">
+                        AI-Proposed Guideline Clarification:
+                      </h4>
+                      <p className={`text-sm ${isDark ? 'text-emerald-200' : 'text-emerald-900'}`}>
+                        "Permit warm, conversational greetings ('Hey everyone', 'Welcome back') on social and video channels, while retaining professional tone on LinkedIn and press releases."
+                      </p>
+                    </div>
+
+                    <div className="flex justify-end space-x-2.5 pt-2">
+                      <button className={`text-xs px-3.5 py-1.5 rounded-lg font-medium cursor-pointer ${
+                        isDark ? 'bg-white/5 hover:bg-white/10 text-emerald-300' : 'bg-slate-100 text-slate-700'
+                      }`}>
+                        Dismiss
+                      </button>
+                      <button
+                        onClick={() => triggerNotification('Clarification applied to Guideline Clause §2.1!')}
+                        className={`text-xs px-4 py-1.5 rounded-lg font-bold shadow-sm cursor-pointer ${accentBtn}`}
+                      >
+                        Apply Rule Amendment to §2.1
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'knowledge' && (
+                <div className="max-w-5xl mx-auto space-y-6">
+                  <div>
+                    <h2 className={`text-lg font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                      Brand Knowledge Base & Atomic Rules
+                    </h2>
+                    <p className={`text-xs ${isDark ? 'text-emerald-400/70' : 'text-slate-500'}`}>
+                      Uploaded PDF guidelines decomposed into atomic vector-indexed rules.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-5">
+                    <div className={`p-6 rounded-2xl border ${cardStyle} ${headerBorder} space-y-3`}>
+                      <h3 className={`text-sm font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                        Active Guideline Documents (2)
+                      </h3>
+                      <ul className={`text-xs space-y-2 list-disc pl-4 ${isDark ? 'text-emerald-300' : 'text-slate-600'}`}>
+                        <li>DermaCare Global Brand Standards 2026.pdf (14 atomic rules indexed)</li>
+                        <li>Influencer Compliance & ASCI Guidelines.docx (6 rules indexed)</li>
+                      </ul>
+                    </div>
+                    <div className={`p-6 rounded-2xl border ${cardStyle} ${headerBorder} space-y-3`}>
+                      <h3 className={`text-sm font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                        Approved Terminology Registry (38 Items)
+                      </h3>
+                      <p className={`text-xs leading-relaxed ${isDark ? 'text-emerald-400/70' : 'text-slate-500'}`}>
+                        Banned clinical superlatives, trademark casing invariants, and mandatory legal disclaimers.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'audit' && (
+                <div className="max-w-5xl mx-auto space-y-6">
+                  <div>
+                    <h2 className={`text-lg font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                      Cryptographic Audit Trail & Governance Log
+                    </h2>
+                    <p className={`text-xs ${isDark ? 'text-emerald-400/70' : 'text-slate-500'}`}>
+                      Append-only log documenting AI checks, human overrides, and legal signoffs.
+                    </p>
+                  </div>
+
+                  <div className={`p-6 rounded-2xl border ${cardStyle} ${headerBorder} space-y-4`}>
+                    <div className={`text-xs space-y-2.5 font-mono p-4 rounded-xl border ${
+                      isDark ? 'bg-black/50 text-emerald-200 border-emerald-500/20' : 'bg-slate-50 text-slate-700 border-slate-200'
+                    }`}>
+                      <div><span className="text-emerald-400">[2026-10-25 11:22:04 UTC]</span> USER: Shivank Sharma (Creator) SUBMITTED content draft #SUB-9021</div>
+                      <div><span className="text-teal-400">[2026-10-25 11:22:05 UTC]</span> PIPELINE: Evaluated 4 checks (Claim, Tone, Regulated, Terminology) &rarr; 4 findings</div>
+                      <div><span className="text-amber-400">[2026-10-25 11:24:10 UTC]</span> USER: Legal Approver ROUTED #f-2 to Regulatory Desk</div>
+                      <div><span className="text-emerald-300">[2026-10-25 11:25:30 UTC]</span> SYSTEM: Audit certificate #BW-CERT-88419 stamped & encrypted</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </main>
+          </div>
+
+          {/* Certificate Modal with Direct Download */}
+          {showCertificate && (
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+              <div className={`rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border ${cardStyle} ${headerBorder}`}>
+                <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">🛡️</span>
+                    <h3 className={`text-base font-bold ${isDark ? 'text-emerald-100' : 'text-slate-900'}`}>
+                      Brandwise Governance & Compliance Certificate
+                    </h3>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowCertificate(false);
+                      setCertificateDownloaded(false);
+                    }}
+                    className="text-emerald-400/70 hover:text-white text-lg font-bold cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className={`text-xs space-y-2 font-mono p-5 rounded-2xl border ${
+                  isDark ? 'bg-black/50 text-emerald-200 border-emerald-500/20' : 'bg-slate-50 text-slate-700 border-slate-200'
+                }`}>
+                  <div><strong>Certificate ID:</strong> BW-CERT-88419-2026</div>
+                  <div><strong>Pipeline Version:</strong> v2.4 (Active Standards)</div>
+                  <div><strong>Tenant:</strong> DermaCare Global Healthcare</div>
+                  <div><strong>Timestamp:</strong> 2026-10-25T11:45:00Z</div>
+                  <div><strong>Status:</strong> Approved with Documented Overrides</div>
+                  <div><strong>DPDP 2025 Audit:</strong> Purpose Limitation Verified</div>
+                  <div><strong>Cryptographic Hash:</strong> 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1f...</div>
+                </div>
+
+                {/* Direct PDF Download Action */}
+                <div className="space-y-3 pt-2">
+                  <button
+                    onClick={generatePdfCertificate}
+                    className={`w-full py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-lg ${accentBtn}`}
+                  >
+                    <span>📄</span>
+                    <span>Download Official Audit Certificate (PDF)</span>
+                  </button>
+
+                  {certificateDownloaded && (
+                    <div className="p-3 rounded-xl text-center text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
+                      ✓ PDF Certificate generated & downloaded! Check your downloads folder for BW-CERT-88419-Governance-Certificate.pdf
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={() => {
+                      setShowCertificate(false);
+                      setCertificateDownloaded(false);
+                    }}
+                    className={`text-xs px-4 py-2 rounded-xl font-medium cursor-pointer ${
+                      isDark ? 'bg-white/10 hover:bg-white/15 text-emerald-200' : 'bg-slate-100 text-slate-700'
+                    }`}
+                  >
+                    Close Modal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<BrandwiseDashboard />);
+  </script>
+</body>
+</html>
